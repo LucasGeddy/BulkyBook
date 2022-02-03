@@ -1,20 +1,22 @@
 ﻿using BulkyBook.Data;
+using BulkyBook.Data.Repository.Interface;
 using BulkyBook.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyBookWeb.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unit;
 
-        public CategoryController(ApplicationDbContext db)
+        public CategoryController(IUnitOfWork unit)
         {
-            _db = db;
+            _unit = unit;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = _db.Categories.ToList();
+            IEnumerable<Category> objCategoryList = _unit.Category.GetAll();
 
             return View(objCategoryList);
         }
@@ -35,8 +37,8 @@ namespace BulkyBookWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(category);
-                _db.SaveChanges();
+                _unit.Category.Add(category);
+                _unit.Save();
 
                 TempData["success"] = "Category created successfully!";
 
@@ -52,7 +54,7 @@ namespace BulkyBookWeb.Controllers
                 return NotFound();
             }
 
-            var categoryFromDb = _db.Categories.Find(id);
+            var categoryFromDb = _unit.Category.GetFirstOrDefault(r=> r.Id == id);
 
             if (categoryFromDb == null)
             {
@@ -73,8 +75,8 @@ namespace BulkyBookWeb.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(category);
-                _db.SaveChanges();
+                _unit.Category.Update(category);
+                _unit.Save();
                 TempData["success"] = "Category updated successfully!";
 
                 return RedirectToAction("Index");
@@ -89,15 +91,15 @@ namespace BulkyBookWeb.Controllers
                 return NotFound();
             }
 
-            var categoryFromDb = _db.Categories.Find(id);
+            var category = _unit.Category.GetFirstOrDefault(r => r.Id == id);
 
-            if (categoryFromDb == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            _db.Remove(categoryFromDb);
-            _db.SaveChanges();
+            _unit.Category.Remove(category);
+            _unit.Save();
             TempData["success"] = "Category deleted successfully!";
 
             return RedirectToAction("Index");
