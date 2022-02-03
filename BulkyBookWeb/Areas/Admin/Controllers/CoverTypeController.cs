@@ -7,16 +7,15 @@ using BulkyBook.Data.Repository.Interface;
 namespace BulkyBookWeb.Controllers
 {
     [Area("Admin")]
-    public class CoverTypesController : Controller
+    public class CoverTypeController : Controller
     {
         private readonly IUnitOfWork _unit;
 
-        public CoverTypesController(IUnitOfWork unit)
+        public CoverTypeController(IUnitOfWork unit)
         {
             _unit = unit;
         }
 
-        // GET: CoverTypes
         public IActionResult Index()
         {
             return View(_unit.CoverType.GetAll());
@@ -29,7 +28,7 @@ namespace BulkyBookWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CreatedDateTime")] CoverType coverType)
+        public async Task<IActionResult> Create([Bind("Name")] CoverType coverType)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +86,6 @@ namespace BulkyBookWeb.Controllers
             return View(coverType);
         }
 
-        // GET: CoverTypes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
