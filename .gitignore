@@ -3,8 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-# This Projects files
-images/products/*
+# This Project's files
+/BulkyBookWeb/wwwroot/images/products/*
 
 # User-specific files
 *.rsuser
